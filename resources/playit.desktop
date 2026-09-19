@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=Pi
+Exec=playit
+Icon=/usr/share/icons/hicolor/256x256/apps/playit.png
+Type=Application
+Terminal=false
+Categories=Utility
+

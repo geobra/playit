@@ -1,0 +1,77 @@
+#include "model.h"
+
+Model::Model(QObject *parent)
+    : QAbstractListModel(parent)
+{
+    m_list.insert(QStringLiteral("Feline"), {QStringLiteral("Tigress"), QStringLiteral("Waai Fuu")});
+    // Add other entries similarly if needed
+}
+
+int Model::rowCount(const QModelIndex &) const {
+    return m_list.count();
+}
+
+QHash<int, QByteArray> Model::roleNames() const {
+    QHash<int, QByteArray> map = {
+        {SpeciesRole, "species"},
+        {CharactersRole, "characters"}
+    };
+    return map;
+}
+
+QVariant Model::data(const QModelIndex &index, int role) const {
+    if (index.row() < 0 || index.row() >= m_list.size())
+        return {};
+
+    auto it = m_list.begin() + index.row();
+    switch (role) {
+        case SpeciesRole:
+            return it.key();
+        case CharactersRole:
+            return formatList(it.value());
+        default:
+            return {};
+    }
+}
+
+QString Model::formatList(const QStringList &list) {
+    return list.join(QStringLiteral(", "));
+}
+
+bool Model::setData(const QModelIndex &index, const QVariant &value, int role) {
+    if (!value.canConvert<QString>() || index.row() < 0 || index.row() >= m_list.size())
+        return false;
+
+    auto it = m_list.begin() + index.row();
+    QStringList characters = value.toString().split(QStringLiteral(", "), Qt::SkipEmptyParts);
+    m_list[it.key()] = characters;
+
+    // Qt 6 requires roles parameter in dataChanged
+    emit dataChanged(index, index, {role});
+
+    return true;
+}
+
+void Model::addSpecies(const QString &species) {
+    int newRow = m_list.size();
+    beginInsertRows(QModelIndex(), newRow, newRow);
+    m_list.insert(species, {});
+    endInsertRows();
+
+    // Notify that all data may have changed
+    emit dataChanged(index(0, 0), index(m_list.size() - 1, 0), {SpeciesRole, CharactersRole});
+}
+
+void Model::deleteSpecies(const QString &species, const int &rowIndex) {
+    if (rowIndex < 0 || rowIndex >= m_list.size())
+        return;
+
+    beginRemoveRows(QModelIndex(), rowIndex, rowIndex);
+    m_list.remove(species);
+    endRemoveRows();
+
+    // Notify that all data may have changed
+    if (!m_list.isEmpty()) {
+        emit dataChanged(index(0, 0), index(m_list.size() - 1, 0), {SpeciesRole, CharactersRole});
+    }
+}

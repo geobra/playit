@@ -1,0 +1,107 @@
+import QtQuick
+import QtQuick.Controls
+import Qt.labs.folderlistmodel
+import QtCore
+import org.kde.kirigami as Kirigami
+
+Kirigami.Dialog {
+    id: dialog
+    title: "Select Folder"
+
+    property url currentFolder: StandardPaths.writableLocation(StandardPaths.HomeLocation)
+    property string selectedPath: ""
+    signal finished(string path)
+
+    width: Kirigami.Units.gridUnit * 25
+    height: Kirigami.Units.gridUnit * 35
+
+    standardButtons: Kirigami.Dialog.NoButton
+
+    Column {
+        anchors.fill: parent
+        spacing: Kirigami.Units.smallSpacing
+
+        Kirigami.Heading {
+            level: 3
+            text: currentFolder
+            wrapMode: Text.WrapAnywhere
+        }
+
+        ListView {
+            id: folderView
+            //Layout.fillWidth: true
+            //Layout.fillHeight: true
+            clip: true
+
+            model: FolderListModel {
+                id: folderModel
+                folder: dialog.currentFolder
+                showDirs: true
+                showFiles: false
+                showDotAndDotDot: false
+                nameFilters: []
+            }
+
+            delegate: ItemDelegate {
+                width: ListView.view.width
+
+                contentItem: Row {
+                    spacing: Kirigami.Units.smallSpacing
+
+                    Kirigami.Icon {
+                        source: "folder"
+                        width: Kirigami.Units.iconSizes.medium
+                        height: width
+                    }
+
+                    Label {
+                        text: fileName
+                        verticalAlignment: Text.AlignVCenter
+                    }
+                }
+
+                onClicked: {
+                    let newPath = fileURL
+
+                    tempModel.folder = newPath
+                    if (tempModel.count > 0) {
+                        dialog.currentFolder = newPath
+                    } else {
+                        dialog.selectedPath = newPath
+                    }
+                }
+            }
+        }
+
+        FolderListModel {
+            id: tempModel
+            showDirs: true
+            showFiles: false
+            showDotAndDotDot: false
+        }
+
+        Row {
+            spacing: Kirigami.Units.largeSpacing
+            anchors.horizontalCenter: parent.horizontalCenter
+
+            Button {
+                text: "Cancel"
+                onClicked: {
+                    dialog.finished("")
+                    dialog.close()
+                }
+            }
+
+            Button {
+                text: "OK"
+                enabled: dialog.currentFolder !== ""
+
+                onClicked: {
+                    let result = dialog.selectedPath !== "" ? dialog.selectedPath : dialog.currentFolder
+                    dialog.finished(result)
+                    dialog.close()
+                }
+            }
+        }
+    }
+}
