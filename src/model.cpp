@@ -145,7 +145,7 @@ int Model::getActiveIndex()
 {
     qDebug() << "Model::getActiveIndex called! ";
 
-    int returnValue{};
+    int returnValue = -1;
 
     for (int i = 0; i < tracks.size(); i++)
     {

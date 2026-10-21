@@ -15,11 +15,12 @@ Kirigami.ApplicationWindow {
     property bool playRunning: false
     property bool playPause: false
     property int currentPosSecond: 0
+    property int observedActiveIndex: -1
 
     Component.onCompleted: {
-        // This allows ColumnLayout to finish organizing its children first
-        console.log("active Index:", customModel.getActiveIndex())
         Qt.callLater(() => flick.scrollToItem(customModel.getActiveIndex()))
+
+        observedActiveIndex = customModel.getActiveIndex()
     }
 
     ListModel {
@@ -37,6 +38,21 @@ Kirigami.ApplicationWindow {
         target: media
         function onDurationChanged(duration) {
             positionSlider.to = duration;
+        }
+    }
+
+    Connections {
+        target: customModel
+        function onDataChanged() {
+            Qt.callLater(() => {
+                var activeIndex = customModel.getActiveIndex()
+                if (activeIndex !== root.observedActiveIndex) {
+                    root.observedActiveIndex = activeIndex
+                    if (activeIndex >= 0 && !flick.isItemVisible(activeIndex)) {
+                        flick.scrollToItem(activeIndex)
+                    }
+                }
+            })
         }
     }
 
@@ -180,6 +196,17 @@ Kirigami.ApplicationWindow {
                     }
                 }
 
+                function isItemVisible(index) {
+                    var targetItem = mediaRepeater.itemAt(index)
+                    if (!targetItem) {
+                        return false
+                    }
+
+                    var mappedPoint = targetItem.mapToItem(flick.contentItem, 0, 0)
+                    return mappedPoint.y + targetItem.height > flick.contentY
+                            && mappedPoint.y < flick.contentY + flick.height
+                }
+
                 ColumnLayout {
                     //anchors.fill: parent
                     //spacing: 0
@@ -205,7 +232,6 @@ Kirigami.ApplicationWindow {
                                 level: 2
                                 color: {
                                     if (model.Active) {
-                                        flick.scrollToItem(customModel.getActiveIndex());
                                         return "blue";
                                     } else {
                                         return "green";
