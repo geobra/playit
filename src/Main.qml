@@ -18,8 +18,8 @@ Kirigami.ApplicationWindow {
 
     Component.onCompleted: {
         // This allows ColumnLayout to finish organizing its children first
-        console.log(customModel.getActiveIndex)
-        Qt.callLater(() => flick.scrollToItem(customModel.getActiveIndex))
+        console.log("active Index:", customModel.getActiveIndex())
+        Qt.callLater(() => flick.scrollToItem(customModel.getActiveIndex()))
     }
 
     ListModel {
@@ -205,7 +205,7 @@ Kirigami.ApplicationWindow {
                                 level: 2
                                 color: {
                                     if (model.Active) {
-                                        //flick.scrollToItem(5);
+                                        flick.scrollToItem(customModel.getActiveIndex());
                                         return "blue";
                                     } else {
                                         return "green";

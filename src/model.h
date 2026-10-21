@@ -33,7 +33,7 @@ public:
     bool setActive(QString media);
     QString getActive();
 
-    int getActiveIndex();
+    Q_INVOKABLE int getActiveIndex();
     //Q_INVOKABLE void clearData();
 
 
