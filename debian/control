@@ -1,0 +1,33 @@
+Source: playit
+Section: unknown
+Priority: optional
+Maintainer: schorsch <schorsch@trinity.local.domain>
+Rules-Requires-Root: no
+Build-Depends:
+ debhelper-compat (= 13),
+ cmake,
+ extra-cmake-modules,
+ ninja-build,
+ qt6-base-dev,
+ qt6-declarative-dev,
+ qt6-multimedia-dev,
+ libkf6i18n-dev,
+ libkf6iconthemes-dev,
+ qml6-module-org-kde-kirigami,
+ kirigami2-dev,
+ libkirigami-dev
+Standards-Version: 4.7.2
+Homepage: <insert the upstream URL, if relevant>
+#Vcs-Browser: https://salsa.debian.org/debian/playit
+#Vcs-Git: https://salsa.debian.org/debian/playit.git
+
+Package: playit
+Architecture: any
+Depends:
+ ${shlibs:Depends},
+ ${misc:Depends},
+ qml6-module-org-kde-kirigami,
+ qml6-module-org-kde-qqc2desktopstyle,
+ qml6-module-qtmultimedia
+Description: <insert up to 60 chars description>
+ <Insert long description, indented with spaces.>
