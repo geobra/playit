@@ -8,6 +8,8 @@ To be documented
 
 # Crosscompile to run within mobian
 
-dpkg-buildpackage -aarm64 -us -uc
+./create_archive.sh
+mv playit-1.0.0.tar.bz2 ../playit_1.0.0.orig.tar.bz2
 
+dpkg-buildpackage -aarm64 -us -uc
 

@@ -1,5 +1,5 @@
 Source: playit
-Section: unknown
+Section: sound
 Priority: optional
 Maintainer: schorsch <schorsch@trinity.local.domain>
 Rules-Requires-Root: no
@@ -17,7 +17,7 @@ Build-Depends:
  kirigami2-dev,
  libkirigami-dev
 Standards-Version: 4.7.2
-Homepage: <insert the upstream URL, if relevant>
+Homepage: https://github.com/geobra/playit
 #Vcs-Browser: https://salsa.debian.org/debian/playit
 #Vcs-Git: https://salsa.debian.org/debian/playit.git
 
@@ -27,7 +27,6 @@ Depends:
  ${shlibs:Depends},
  ${misc:Depends},
  qml6-module-org-kde-kirigami,
- qml6-module-org-kde-qqc2desktopstyle,
  qml6-module-qtmultimedia
 Description: <insert up to 60 chars description>
  <Insert long description, indented with spaces.>
