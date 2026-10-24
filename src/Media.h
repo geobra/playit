@@ -7,6 +7,7 @@
 #include <QStringList>
 #include <QMediaPlayer>
 #include <QAudioOutput>
+#include <QAudioDevice>
 #include <cstdint>
 
 #include "MprisPlayer.h"
@@ -51,6 +52,7 @@ public slots:
     void seek(uint32_t seconds);
 
     void setVolume(float volume);
+    void setAudioOutputDevice(const QAudioDevice &device);
 
 signals:
 

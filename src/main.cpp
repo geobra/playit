@@ -39,6 +39,7 @@ int main(int argc, char *argv[])
     engine.rootContext()->setContextProperty("customModel", &model);
     engine.rootContext()->setContextProperty("media", &media);
     engine.rootContext()->setContextProperty("settings", &settings);
+    engine.rootContext()->setContextProperty("audioOutputDevices", mm->audioOutputDevices());
 
     engine.loadFromModule("org.kde.playit", "Main");
 

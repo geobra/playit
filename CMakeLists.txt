@@ -50,6 +50,8 @@ add_executable(playit
 # Main sources
 target_sources(playit PRIVATE
     src/main.cpp
+    src/AudioOutputDeviceModel.cpp
+    src/AudioOutputDeviceModel.h
     src/model.cpp
     src/model.h
     src/MediaInfo.h

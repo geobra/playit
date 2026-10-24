@@ -23,10 +23,6 @@ Kirigami.ApplicationWindow {
         observedActiveIndex = customModel.getActiveIndex()
     }
 
-    ListModel {
-        id: nicModel
-    }
-
     Connections {
         target: media
         function onPositionChanged(position) {
@@ -136,35 +132,50 @@ Kirigami.ApplicationWindow {
                 onTriggered: {
                     folderDialog.open();
                 }
+            },
+            Kirigami.Action {
+                icon.name: "audio-speakers"
+                text: i18n("Output Device")
+                onTriggered: outputDeviceDialog.open()
             }
         ]
 
 
         Kirigami.Dialog {
-            id: chooseNicPopup
-            title: i18nc("@title:window", "Select Nic")
+            id: outputDeviceDialog
+            title: i18nc("@title:window", "Select Audio Output")
             standardButtons: Kirigami.Dialog.Cancel
             padding: Kirigami.Units.largeSpacing
             preferredWidth: Kirigami.Units.gridUnit * 20
             implicitHeight: parent.height / 2
 
-            contentItem: ListView {
-                Layout.fillWidth: true
-                Layout.fillHeight: true
-                model: nicModel
+            contentItem: ColumnLayout {
+                ListView {
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+                    model: audioOutputDevices
 
-                delegate: Kirigami.AbstractCard {
-                    header: Kirigami.Heading {
-                        text: model.text
-                        level: 2
-                    }
-                    MouseArea {
-                        anchors.fill: parent
+                    delegate: Controls.ItemDelegate {
+                        required property int index
+                        required property string deviceName
+                        required property bool isDefault
+                        required property bool isSelected
+
+                        width: ListView.view.width
+                        text: deviceName + (isDefault ? " (" + i18n("Default") + ")" : "")
+                        highlighted: isSelected
                         onClicked: {
-                            scanner.setNicForScanning(model.text)
-                            chooseNicPopup.close()
+                            audioOutputDevices.selectDevice(index)
+                            outputDeviceDialog.close()
                         }
                     }
+                }
+
+                Controls.Label {
+                    Layout.fillWidth: true
+                    visible: audioOutputDevices.count === 0
+                    text: i18n("No audio output devices found")
+                    horizontalAlignment: Text.AlignHCenter
                 }
             }
         }

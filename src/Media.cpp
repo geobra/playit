@@ -292,6 +292,11 @@ void Media::setVolume(float volume)
     audioOutput->setVolume(volume);
 }
 
+void Media::setAudioOutputDevice(const QAudioDevice &device)
+{
+    audioOutput->setDevice(device);
+}
+
 #if 0
 void Media::setPlaylist(const QStringList &files)
 {

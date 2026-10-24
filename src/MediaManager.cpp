@@ -1,14 +1,19 @@
 #include "MediaManager.h"
 #include "Settings.h"
 
-#include <utility>
 #include <QDebug>
 
 MediaManager::MediaManager(Model* model, Media* media, QObject *parent)
-    : QObject{parent}
+    : QObject{parent},
+      model_(model),
+      media_(media),
+      audioOutputDevices_(new AudioOutputDeviceModel(this))
 {
-    model_ = std::move(model);
-    media_ = std::move(media);
+    connect(audioOutputDevices_, &AudioOutputDeviceModel::selectedAudioDeviceChanged,
+            this, &MediaManager::setAudioOutputDevice);
+    if (!audioOutputDevices_->selectedDevice().id().isEmpty()) {
+        media_->setAudioOutputDevice(audioOutputDevices_->selectedDevice());
+    }
 
     connect(media_, SIGNAL(mediaFound(MediaInfo)), this, SLOT(receiveMediaInfo(MediaInfo)));
 
@@ -37,6 +42,20 @@ MediaManager::MediaManager(Model* model, Media* media, QObject *parent)
         model_->setActive(lastMedie);
     }
 
+}
+
+AudioOutputDeviceModel *MediaManager::audioOutputDevices() const
+{
+    return audioOutputDevices_;
+}
+
+void MediaManager::setAudioOutputDevice(const QAudioDevice &device)
+{
+    if (!device.id().isEmpty()) {
+        media_->setAudioOutputDevice(device);
+    } else {
+        qWarning() << "No audio output device is available; playback output was not changed";
+    }
 }
 
 void MediaManager::persistCurrentPosition(uint32_t seconds)
